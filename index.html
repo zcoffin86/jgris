@@ -368,6 +368,8 @@
     else if (suffixText != "") affixText = suffixText;
     let shopItemPriceText = shopItem.price;
     if (shopItem.price > 140000) {
+      // jarulf162.pdf p.50
+      // TODO: How to handle this item that shouldn't show up in the shop... regenerate an entirely new item, or keep some of the rolls (base item, ac, # of prefixes etc?)
       shopItemPriceText = shopItemPriceText + " - TOO DAMN HIGH!";
       console.log("the price is too damn high!", shopItem);
     }
