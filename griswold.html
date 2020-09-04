@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      @font-face {
+        font-family: "exocet";
+        src: url("exocet.woff") format("woff");
+      }
+      * {
+        font-family: "exocet";
+      }
+      p.item-name {
+        margin-bottom: unset;
+      }
+      p.item-affixes {
+        margin: unset;
+      }
+      p.item-base-attr {
+        margin-top: unset;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Well, what can I do for ya?</h1>
+    <p><label>cLvl:</label><input type="number" name="clvl" id="clvl" value=20 /></p>
+    <p>
+      <button id="generateGriswold">Generate</button>
+    </p>
+    <table style="width: 800px">
+      <thead>
+        <td style="width: 75%">I have these items for sale :</td>
+        <td style="width: 25%">Your gold : 140000</td>
+      </thead>
+      <tbody>
+        <tr id="shop1">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+        <tr id="shop2">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+        <tr id="shop3">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+        <tr id="shop4">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+        <tr id="shop5">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+        <tr id="shop6">
+          <td>
+            <p class="item-name"></p>
+            <p class="item-affixes"></p>
+            <p class="item-base-attr"></p>
+          </td>
+          <td>
+            <p class="item-price"></p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+
+<script type="text/javascript" src="prefixes.js"></script>
+<script type="text/javascript" src="baseItems.js"></script>
+<script type="text/javascript" src="suffixes.js"></script>
+<script>
+  document.getElementById("generateGriswold").onclick = () => {
+    // console.log('Well, what can I do for ya?')
+    // console.log('baseArmors', baseArmors)
+    var step;
+    var clvl = parseInt(document.getElementById("clvl").value);
+    for (step = 1; step < 7; step++) {
+      var ilvl = 0;
+      if (step < 3) ilvl = clvl - 1;
+      else if (step < 5) ilvl = clvl;
+      else if (step < 6) ilvl = clvl + 1;
+      else ilvl = clvl + 2;
+      regenerateItemInSlot(document.getElementById("shop" + step), ilvl);
+    }
+  };
+  function regenerateItemInSlot(slotEl, ilvl) {
+    var howMagical = Math.random();
+    var qlvlBaseMin = Math.floor(ilvl / 4);
+    var qlvlBaseMax = ilvl;
+    var qlvlAffixMin = Math.min(Math.floor(ilvl / 2), 25);
+    var qlvlAffixMax = Math.min(ilvl, 30);
+
+    // Figure out all the possible base items for the given ilvl
+    griswoldPremiumBaseItems = [
+      baseArmors,
+      baseAxes,
+      baseBows,
+      baseClubs,
+      baseHelms,
+      baseShields,
+      baseSwords,
+    ];
+    possibleBaseItems = [];
+    for (const baseItemType of griswoldPremiumBaseItems) {
+      for (const baseItem of baseItemType) {
+        if (baseItem.qlvl >= qlvlBaseMin && baseItem.qlvl <= qlvlBaseMax) {
+          possibleBaseItems.push(baseItem);
+        }
+      }
+    }
+    // console.log('ilvl, possibleBaseItems', ilvl, possibleBaseItems)
+
+    // Create a shop item out of a random base item
+    var shopItem = {};
+    var baseItem = possibleBaseItems[getRandomInt(possibleBaseItems.length)];
+    shopItem.baseItem = JSON.parse(JSON.stringify(baseItem));
+    var shopItemText = shopItem.baseItem.name;
+    if (shopItem.baseItem.acMin != undefined) {
+      // if the item is an armor, figure out it's armor class
+      shopItem.baseItem.ac =
+        getRandomInt(baseItem.acMax + 1 - baseItem.acMin) + baseItem.acMin;
+    }
+
+    var suffixText = "";
+    if (howMagical >= 0.208) {
+      var possibleSuffixes = [];
+      for (const suffix of suffixes) {
+        if (suffix.occurrence.includes(shopItem.baseItem.occurrence)) {
+          if (
+            suffix.qlvl >= qlvlAffixMin &&
+            suffix.qlvl <= qlvlAffixMax &&
+            suffix.multiplier > 0
+          ) {
+            // TODO: Remove this suffix.multiplier once price considerations are in
+            possibleSuffixes.push(suffix);
+          }
+        }
+      }
+      console.log(possibleSuffixes);
+      var suffix = possibleSuffixes[getRandomInt(possibleSuffixes.length)];
+      console.log(suffix);
+      shopItem.suffix = JSON.parse(JSON.stringify(suffix));
+      shopItemText = shopItemText + " of " + shopItem.suffix.name;
+      if (shopItem.suffix.value) {
+        // "fastest attack speed"
+        suffixText = shopItem.suffix.effect + " " + shopItem.suffix.value;
+      } else if (shopItem.suffix.valMin < 0) {
+        // -20% light radius
+        shopItem.suffix.value =
+          shopItem.suffix.valMin +
+          getRandomInt(shopItem.suffix.valMax - shopItem.suffix.valMin);
+        suffixText = shopItem.suffix.value + shopItem.suffix.effect;
+      } else if (shopItem.suffix.valMin > 0) {
+        // +4 damage from enemies
+        shopItem.suffix.value =
+          shopItem.suffix.valMin +
+          getRandomInt(shopItem.suffix.valMax - shopItem.suffix.valMin);
+        suffixText = "+" + shopItem.suffix.value + shopItem.suffix.effect;
+      } else {
+        suffixText = shopItem.suffix.effect;
+      }
+    } else {
+      // no prefix
+      shopItem.suffix = {};
+      shopItem.suffix.base = 0;
+      shopItem.suffix.multiplier = 0;
+    }
+
+    var prefixText = "";
+    if (howMagical < 0.375) {
+      var possiblePrefixes = [];
+      for (const prefix of prefixes) {
+        if (prefix.occurrence.includes(shopItem.baseItem.occurrence)) {
+          if (
+            prefix.qlvl >= qlvlAffixMin &&
+            prefix.qlvl <= qlvlAffixMax &&
+            prefix.multiplier > 0
+          ) {
+            // TODO: Remove this prefix.multiplier once price considerations are in
+            possiblePrefixes.push(prefix);
+          }
+        }
+      }
+      console.log(possiblePrefixes);
+      var prefix = possiblePrefixes[getRandomInt(possiblePrefixes.length)];
+      console.log(prefix);
+      shopItem.prefix = JSON.parse(JSON.stringify(prefix));
+      shopItemText = shopItem.prefix.name + " " + shopItemText;
+      if (shopItem.prefix.value) {
+        // "fastest attack speed"
+        prefixText = shopItem.prefix.effect + " " + shopItem.prefix.value;
+      } else if (shopItem.prefix.val2Min) {
+        if (shopItem.prefix.val2Min < 0) {
+          // -20% light radius
+          shopItem.prefix.value =
+            shopItem.prefix.valMin +
+            getRandomInt(shopItem.prefix.valMax - shopItem.prefix.valMin);
+          shopItem.prefix.value2 =
+            shopItem.prefix.val2Min +
+            getRandomInt(shopItem.prefix.val2Max - shopItem.prefix.val2Min);
+          prefixText = shopItem.prefix.effect
+            .replace("v1", shopItem.prefix.value)
+            .replace("v2", shopItem.prefix.value2);
+        } else if (shopItem.prefix.val2Min > 0) {
+          // +4 damage from enemies
+          shopItem.prefix.value =
+            shopItem.prefix.valMin +
+            getRandomInt(shopItem.prefix.valMax - shopItem.prefix.valMin);
+          shopItem.prefix.value2 =
+            shopItem.prefix.val2Min +
+            getRandomInt(shopItem.prefix.val2Max - shopItem.prefix.val2Min);
+          prefixText = shopItem.prefix.effect
+            .replace("v1", "+" + shopItem.prefix.value)
+            .replace("v2", "+" + shopItem.prefix.value2);
+        }
+      } else if (shopItem.prefix.valMin < 0) {
+        // -20% light radius
+        shopItem.prefix.value =
+          shopItem.prefix.valMin +
+          getRandomInt(shopItem.prefix.valMax - shopItem.prefix.valMin);
+        prefixText = shopItem.prefix.value + shopItem.prefix.effect;
+      } else if (shopItem.prefix.valMin > 0) {
+        // +4 damage from enemies
+        shopItem.prefix.value =
+          shopItem.prefix.valMin +
+          getRandomInt(shopItem.prefix.valMax - shopItem.prefix.valMin);
+        prefixText = "+" + shopItem.prefix.value + shopItem.prefix.effect;
+      } else {
+        prefixText = shopItem.prefix.effect;
+      }
+    } else {
+      // no prefix
+      shopItem.prefix = {};
+      shopItem.prefix.base = 0;
+      shopItem.prefix.multiplier = 0;
+    }
+
+    console.log(shopItem);
+    var affixMultiplier =
+      shopItem.prefix.multiplier + shopItem.suffix.multiplier;
+    shopItem.price = shopItem.prefix.base + shopItem.suffix.base;
+    if (shopItem.prefix.range != undefined)
+      shopItem.price =
+        shopItem.price +
+        (Math.floor(
+          ((shopItem.prefix.value - shopItem.prefix.valMin) /
+            shopItem.prefix.steps) *
+            100
+        ) /
+          100) *
+          shopItem.prefix.range;
+    if (shopItem.suffix.range != undefined)
+      shopItem.price =
+        shopItem.price +
+        (Math.floor(
+          ((shopItem.suffix.value - shopItem.suffix.valMin) /
+            shopItem.suffix.steps) *
+            100
+        ) /
+          100) *
+          shopItem.suffix.range;
+
+    if (affixMultiplier >= 0) {
+      shopItem.price = Math.floor(
+        shopItem.price + shopItem.baseItem.price * affixMultiplier
+      );
+      console.log("positive affix multiplier, price =", shopItem.price);
+    } else {
+      shopItem.price = Math.floor(
+        shopItem.price + shopItem.baseItem.price / affixMultiplier
+      );
+      console.log("negative affix multiplier, price =", shopItem.price);
+    }
+
+    // Update the display with the new item
+    if (shopItem.baseItem.ac != undefined) {
+      // Make sure the random armor class value is in the name
+      //shopItemText = shopItemText + ', AC: ' + shopItem.baseItem.ac
+    }
+
+    var attrText = "some damage, some durability, some AC, some requirements";
+    if (shopItem.baseItem.ac != undefined) {
+      attrText = shopItem.baseItem.ac + " Armor Class";
+    } else if (shopItem.baseItem.dmgMin) {
+      attrText =
+        "Damage: " + shopItem.baseItem.dmgMin + "-" + shopItem.baseItem.dmgMax;
+    }
+    // TODO: If suffix is of ages, show Indestructible instead of Dur:
+    attrText =
+      attrText +
+      "  Dur: " +
+      shopItem.baseItem.dur +
+      "/" +
+      shopItem.baseItem.dur;
+    if (shopItem.baseItem.reqs.str != undefined) {
+      if (shopItem.baseItem.reqs.dex != undefined) {
+        attrText =
+          attrText +
+          "  Required: " +
+          shopItem.baseItem.reqs.str +
+          " str " +
+          shopItem.baseItem.reqs.dex +
+          " dex";
+      } else {
+        attrText =
+          attrText + "  Required: " + shopItem.baseItem.reqs.str + " str";
+      }
+    } else if (shopItem.baseItem.reqs.dex != undefined) {
+      attrText =
+        attrText + "  Required: " + shopItem.baseItem.reqs.dex + " dex";
+    } else {
+      attrText = attrText + "  No required attributes";
+    }
+
+    var affixText;
+    if (prefixText != "" && suffixText != "")
+      affixText = prefixText + ", " + suffixText;
+    else if (prefixText != "") affixText = prefixText;
+    else if (suffixText != "") affixText = suffixText;
+    slotEl.getElementsByClassName("item-name")[0].textContent = shopItemText;
+    slotEl.getElementsByClassName("item-affixes")[0].textContent = affixText;
+    slotEl.getElementsByClassName("item-base-attr")[0].textContent = attrText;
+    slotEl.getElementsByClassName("item-price")[0].textContent = shopItem.price;
+    if (shopItem.price > 140000)
+      slotEl.getElementsByClassName("price")[0].textContent =
+        shopItem.price + " - TOO DAMN HIGH!";
+  }
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+</script>
