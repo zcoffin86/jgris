@@ -109,16 +109,21 @@
     // console.log('baseArmors', baseArmors)
     var step;
     var clvl = parseInt(document.getElementById("clvl").value);
+    let items = new Array(6);
     for (step = 1; step < 7; step++) {
       var ilvl = 0;
       if (step < 3) ilvl = clvl - 1;
       else if (step < 5) ilvl = clvl;
       else if (step < 6) ilvl = clvl + 1;
       else ilvl = clvl + 2;
-      regenerateItemInSlot(document.getElementById("shop" + step), ilvl);
+      items[step - 1] = generateItem(ilvl);
+    }
+    for (step = 1; step < 7; step++) {
+      postItemToShop(document.getElementById("shop" + step), items[step - 1]);
     }
   };
-  function regenerateItemInSlot(slotEl, ilvl) {
+
+  function generateItem(ilvl) {
     var qlvlBaseMin = Math.floor(ilvl / 4);
     var qlvlBaseMax = ilvl;
     var qlvlAffixMin = Math.min(Math.floor(ilvl / 2), 25);
@@ -361,19 +366,31 @@
       affixText = prefixText + ", " + suffixText;
     else if (prefixText != "") affixText = prefixText;
     else if (suffixText != "") affixText = suffixText;
-    slotEl.getElementsByClassName("item-name")[0].textContent = shopItemText;
-    slotEl.getElementsByClassName("item-affixes")[0].textContent = affixText;
-    slotEl.getElementsByClassName("item-base-attr")[0].textContent = attrText;
     let shopItemPriceText = shopItem.price;
     if (shopItem.price > 140000) {
       shopItemPriceText = shopItemPriceText + " - TOO DAMN HIGH!";
       console.log("the price is too damn high!", shopItem);
     }
-    slotEl.getElementsByClassName(
-      "item-price"
-    )[0].textContent = shopItemPriceText;
+    return {
+      shopItemText,
+      affixText,
+      attrText,
+      shopItemPriceText,
+    };
   }
+
   function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max + 1));
+  }
+
+  function postItemToShop(slotEl, itemText) {
+    slotEl.getElementsByClassName("item-name")[0].textContent =
+      itemText.shopItemText;
+    slotEl.getElementsByClassName("item-affixes")[0].textContent =
+      itemText.affixText;
+    slotEl.getElementsByClassName("item-base-attr")[0].textContent =
+      itemText.attrText;
+    slotEl.getElementsByClassName("item-price")[0].textContent =
+      itemText.shopItemPriceText;
   }
 </script>
