@@ -159,6 +159,7 @@
   };
 
   function generateItem(ilvl) {
+    ilvl = Math.max(ilvl, 1);
     var qlvlBaseMin = Math.floor(ilvl / 4);
     var qlvlBaseMax = ilvl;
     var qlvlAffixMin = Math.min(Math.floor(ilvl / 2), 25);
