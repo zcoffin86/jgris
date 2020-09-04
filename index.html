@@ -22,7 +22,10 @@
   </head>
   <body>
     <h1>Well, what can I do for ya?</h1>
-    <p><label>cLvl:</label><input type="number" name="clvl" id="clvl" value=20 /></p>
+    <p>
+      <label>cLvl:</label
+      ><input type="number" name="clvl" id="clvl" value="20" />
+    </p>
     <p>
       <button id="generateGriswold">Generate</button>
     </p>
@@ -116,7 +119,6 @@
     }
   };
   function regenerateItemInSlot(slotEl, ilvl) {
-    var howMagical = Math.random();
     var qlvlBaseMin = Math.floor(ilvl / 4);
     var qlvlBaseMax = ilvl;
     var qlvlAffixMin = Math.min(Math.floor(ilvl / 2), 25);
@@ -153,8 +155,15 @@
         getRandomInt(baseItem.acMax + 1 - baseItem.acMin) + baseItem.acMin;
     }
 
+    // jarulf162.pdf p.42
+    // Prefix only: 20.8%
+    // Suffix only: 62.5%
+    // Prefix and suffix: 16.7%
+    var howMagical = Math.random();
+    var prefixText = "";
     var suffixText = "";
     if (howMagical >= 0.208) {
+      // At least a suffix, 1 - (0.625 + 0.167) = 0.208
       var possibleSuffixes = [];
       for (const suffix of suffixes) {
         if (suffix.occurrence.includes(shopItem.baseItem.occurrence)) {
@@ -168,9 +177,9 @@
           }
         }
       }
-      console.log(possibleSuffixes);
+      // console.log(possibleSuffixes);
       var suffix = possibleSuffixes[getRandomInt(possibleSuffixes.length)];
-      console.log(suffix);
+      // console.log(suffix);
       shopItem.suffix = JSON.parse(JSON.stringify(suffix));
       shopItemText = shopItemText + " of " + shopItem.suffix.name;
       if (shopItem.suffix.value) {
@@ -192,14 +201,15 @@
         suffixText = shopItem.suffix.effect;
       }
     } else {
-      // no prefix
-      shopItem.suffix = {};
-      shopItem.suffix.base = 0;
-      shopItem.suffix.multiplier = 0;
+      // no suffix
+      shopItem.suffix = {
+        base: 0,
+        multiplier: 0,
+      };
     }
 
-    var prefixText = "";
     if (howMagical < 0.375) {
+      // at least a prefix, 0.208 + 0.167 = 0.375
       var possiblePrefixes = [];
       for (const prefix of prefixes) {
         if (prefix.occurrence.includes(shopItem.baseItem.occurrence)) {
@@ -213,9 +223,9 @@
           }
         }
       }
-      console.log(possiblePrefixes);
+      // console.log(possiblePrefixes);
       var prefix = possiblePrefixes[getRandomInt(possiblePrefixes.length)];
-      console.log(prefix);
+      // console.log(prefix);
       shopItem.prefix = JSON.parse(JSON.stringify(prefix));
       shopItemText = shopItem.prefix.name + " " + shopItemText;
       if (shopItem.prefix.value) {
@@ -262,12 +272,13 @@
       }
     } else {
       // no prefix
-      shopItem.prefix = {};
-      shopItem.prefix.base = 0;
-      shopItem.prefix.multiplier = 0;
+      shopItem.prefix = {
+        base: 0,
+        multiplier: 0,
+      };
     }
 
-    console.log(shopItem);
+    // console.log(shopItem);
     var affixMultiplier =
       shopItem.prefix.multiplier + shopItem.suffix.multiplier;
     shopItem.price = shopItem.prefix.base + shopItem.suffix.base;
@@ -296,12 +307,12 @@
       shopItem.price = Math.floor(
         shopItem.price + shopItem.baseItem.price * affixMultiplier
       );
-      console.log("positive affix multiplier, price =", shopItem.price);
+      // console.log("positive affix multiplier, price =", shopItem.price);
     } else {
       shopItem.price = Math.floor(
         shopItem.price + shopItem.baseItem.price / affixMultiplier
       );
-      console.log("negative affix multiplier, price =", shopItem.price);
+      // console.log("negative affix multiplier, price =", shopItem.price);
     }
 
     // Update the display with the new item
@@ -353,9 +364,11 @@
     slotEl.getElementsByClassName("item-affixes")[0].textContent = affixText;
     slotEl.getElementsByClassName("item-base-attr")[0].textContent = attrText;
     slotEl.getElementsByClassName("item-price")[0].textContent = shopItem.price;
-    if (shopItem.price > 140000)
-      slotEl.getElementsByClassName("price")[0].textContent =
+    if (shopItem.price > 140000) {
+      slotEl.getElementsByClassName("item-price")[0].textContent =
         shopItem.price + " - TOO DAMN HIGH!";
+      console.log("the price is too damn high!", shopItem);
+    }
   }
   function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
