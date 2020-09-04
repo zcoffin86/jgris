@@ -146,13 +146,14 @@
 
     // Create a shop item out of a random base item
     var shopItem = {};
-    var baseItem = possibleBaseItems[getRandomInt(possibleBaseItems.length)];
+    var baseItem =
+      possibleBaseItems[getRandomInt(possibleBaseItems.length - 1)];
     shopItem.baseItem = JSON.parse(JSON.stringify(baseItem));
     var shopItemText = shopItem.baseItem.name;
     if (shopItem.baseItem.acMin != undefined) {
       // if the item is an armor, figure out it's armor class
       shopItem.baseItem.ac =
-        getRandomInt(baseItem.acMax + 1 - baseItem.acMin) + baseItem.acMin;
+        getRandomInt(baseItem.acMax - baseItem.acMin) + baseItem.acMin;
     }
 
     // jarulf162.pdf p.42
@@ -178,7 +179,7 @@
         }
       }
       // console.log(possibleSuffixes);
-      var suffix = possibleSuffixes[getRandomInt(possibleSuffixes.length)];
+      var suffix = possibleSuffixes[getRandomInt(possibleSuffixes.length - 1)];
       // console.log(suffix);
       shopItem.suffix = JSON.parse(JSON.stringify(suffix));
       shopItemText = shopItemText + " of " + shopItem.suffix.name;
@@ -224,7 +225,7 @@
         }
       }
       // console.log(possiblePrefixes);
-      var prefix = possiblePrefixes[getRandomInt(possiblePrefixes.length)];
+      var prefix = possiblePrefixes[getRandomInt(possiblePrefixes.length - 1)];
       // console.log(prefix);
       shopItem.prefix = JSON.parse(JSON.stringify(prefix));
       shopItemText = shopItem.prefix.name + " " + shopItemText;
@@ -363,14 +364,16 @@
     slotEl.getElementsByClassName("item-name")[0].textContent = shopItemText;
     slotEl.getElementsByClassName("item-affixes")[0].textContent = affixText;
     slotEl.getElementsByClassName("item-base-attr")[0].textContent = attrText;
-    slotEl.getElementsByClassName("item-price")[0].textContent = shopItem.price;
+    let shopItemPriceText = shopItem.price;
     if (shopItem.price > 140000) {
-      slotEl.getElementsByClassName("item-price")[0].textContent =
-        shopItem.price + " - TOO DAMN HIGH!";
+      shopItemPriceText = shopItemPriceText + " - TOO DAMN HIGH!";
       console.log("the price is too damn high!", shopItem);
     }
+    slotEl.getElementsByClassName(
+      "item-price"
+    )[0].textContent = shopItemPriceText;
   }
   function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
+    return Math.floor(Math.random() * Math.floor(max + 1));
   }
 </script>
