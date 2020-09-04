@@ -53,7 +53,7 @@ var prefixes = [
   // Hellfire only:
   //{ effect: '% To Hit, % Dmg Done', name: 'doppelganger\'s',  valMin: 21,   valMax: 30,   val2Min: 81,  val2Max: 95,  occurrence: '  WT  ', qlvl: 11, steps: 14,  base: 2000,  max: 2400,   range: 400,   multiplier: 10 },
 
-  { effect: '% Dmg Done', name: 'useless',      valMin: -100, valMax: undefined, occurrence: '  WtB ', qlvl: 5,   steps: undefined,  base: undefined,  max: undefined, range: undefined,  multiplier: -8 },
+  { effect: '% Dmg Done', name: 'useless',      valMin: -100, valMax: -100,      occurrence: '  WtB ', qlvl: 5,   steps: undefined,  base: undefined,  max: undefined, range: undefined,  multiplier: -8 },
   { effect: '% Dmg Done', name: 'bent',         valMin: -75,  valMax: -50,       occurrence: '  WtB ', qlvl: 3,   steps: undefined,  base: undefined,  max: undefined, range: undefined,  multiplier: -4 },
   { effect: '% Dmg Done', name: 'weak',         valMin: -45,  valMax: -25,       occurrence: '  WtB ', qlvl: 1,   steps: undefined,  base: undefined,  max: undefined, range: undefined,  multiplier: -3 },
   { effect: '% Dmg Done', name: 'jagged',       valMin: 20,   valMax: 35,        occurrence: '  WtB ', qlvl: 4,   steps: 15,  base: 250,   max: 450,    range: 200,  multiplier: 3 },

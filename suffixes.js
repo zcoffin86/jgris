@@ -82,9 +82,9 @@ var suffixes = [
   { effect: '% Steal Mana', name: 'vampires', valMin: 5,  valMax: 5,  occurrence: '  W   ', qlvl: 19, steps: undefined, base: 15000,  max: undefined, range: undefined, multiplier: 3 },
 
   // These have extra rules in Hellfire
-  { effect: ' to target\'s armor', name: 'piercing',   valMin: -2,  valMax: -6,  occurrence: '  W B ', qlvl: 1,  steps: undefined, base: 1000,  max: undefined, range: undefined, multiplier: 3 },
-  { effect: ' to target\'s armor', name: 'puncturing', valMin: -4,  valMax: -12, occurrence: '  W B ', qlvl: 9,  steps: undefined, base: 2000,  max: undefined, range: undefined, multiplier: 6 },
-  { effect: ' to target\'s armor', name: 'bashing',    valMin: -8,  valMax: -24, occurrence: '  W   ', qlvl: 17, steps: undefined, base: 4000,  max: undefined, range: undefined, multiplier: 12 },
+  { effect: ' to target\'s armor', name: 'piercing',   valMin: -6,  valMax: -2, occurrence: '  W B ', qlvl: 1,  steps: undefined, base: 1000,  max: undefined, range: undefined, multiplier: 3 },
+  { effect: ' to target\'s armor', name: 'puncturing', valMin: -12, valMax: -4, occurrence: '  W B ', qlvl: 9,  steps: undefined, base: 2000,  max: undefined, range: undefined, multiplier: 6 },
+  { effect: ' to target\'s armor', name: 'bashing',    valMin: -24, valMax: -8, occurrence: '  W   ', qlvl: 17, steps: undefined, base: 4000,  max: undefined, range: undefined, multiplier: 12 },
 
   { effect: '% Light Radius', name: 'the dark',   valMin: -40,  valMax: -40,  occurrence: 'A W  J', qlvl: 6, steps: undefined, base: undefined,  max: undefined, range: undefined, multiplier: -3 },
   { effect: '% Light Radius', name: 'the night',  valMin: -20,  valMax: -20,  occurrence: 'A W  J', qlvl: 3, steps: undefined, base: undefined,  max: undefined, range: undefined, multiplier: -2 },
