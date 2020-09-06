@@ -162,7 +162,7 @@
     var step;
     var clvl = parseInt(document.getElementById("clvl").value);
     let items = new Array(6);
-    while (foundIt < 10) {
+    while (foundIt < 1 && generationCount < 10000) {
       generationCount++;
       for (step = 1; step < 7; step++) {
         var ilvl = 0;
@@ -403,12 +403,12 @@
       }
       // If suffix is of ages, don't show "Dur:"
       if (shopItem.baseItem.dur && shopItem.suffix?.name !== "the ages") {
-      attrText =
-        attrText +
+        attrText =
+          attrText +
           "  Dur: " +
-        shopItem.baseItem.dur +
-        "/" +
-        shopItem.baseItem.dur;
+          shopItem.baseItem.dur +
+          "/" +
+          shopItem.baseItem.dur;
       }
       attrText += ",  ";
       if (shopItem.baseItem.reqs?.str != undefined) {
