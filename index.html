@@ -51,7 +51,7 @@
         type="number"
         name="clvl"
         id="clvl"
-        value="20"
+        value="21"
         min="1"
         max="30"
         style="width: 50px; color: #cccccc; background: #141111"
@@ -185,6 +185,7 @@
       baseHelms,
       baseShields,
       baseSwords,
+      baseJewelry,
     ];
     possibleBaseItems = [];
     for (const baseItemType of griswoldPremiumBaseItems) {
@@ -211,9 +212,9 @@
       }
 
       // jarulf162.pdf p.42
-      // Prefix only: 20.8%
-      // Suffix only: 62.5%
-      // Prefix and suffix: 16.7%
+      // Prefix only: 20.8% (5/24)
+      // Suffix only: 62.5% (15/24)
+      // Prefix and suffix: 16.7% (1/6)
       var howMagical = Math.random();
       var prefixText = "";
       var suffixText = "";
@@ -395,8 +396,8 @@
         shopItem.baseItem.dur +
         "/" +
         shopItem.baseItem.dur;
-      if (shopItem.baseItem.reqs.str != undefined) {
-        if (shopItem.baseItem.reqs.dex != undefined) {
+      if (shopItem.baseItem.reqs?.str != undefined) {
+        if (shopItem.baseItem.reqs?.dex != undefined) {
           attrText =
             attrText +
             "  Required: " +
@@ -408,7 +409,7 @@
           attrText =
             attrText + "  Required: " + shopItem.baseItem.reqs.str + " str";
         }
-      } else if (shopItem.baseItem.reqs.dex != undefined) {
+      } else if (shopItem.baseItem.reqs?.dex != undefined) {
         attrText =
           attrText + "  Required: " + shopItem.baseItem.reqs.dex + " dex";
       } else {
@@ -426,7 +427,7 @@
         // TODO: How to handle this item that shouldn't show up in the shop... regenerate an entirely new item, or keep some of the rolls (base item, ac, # of prefixes etc?)
         // devilution completely regens it, see void SpawnOnePremium(int i, int plvl) in items.cpp
         shopItemPriceText = shopItemPriceText + " - TOO DAMN HIGH!";
-        console.log("the price is too damn high!", shopItem);
+        // console.log("the price is too damn high!", shopItem);
         priceTooHigh = true;
       } else {
         priceTooHigh = false;
