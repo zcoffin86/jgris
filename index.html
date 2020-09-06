@@ -51,7 +51,6 @@
         type="number"
         name="clvl"
         id="clvl"
-        value="21"
         min="1"
         max="30"
         style="width: 50px; color: #cccccc; background: #141111"
@@ -142,12 +141,15 @@
 <script type="text/javascript" src="baseItems.js"></script>
 <script type="text/javascript" src="suffixes.js"></script>
 <script>
+  document.getElementById("clvl").value = localStorage.getItem("clvl");
   function onClvlChange(value) {
     if (value < 1) {
-      document.getElementById("clvl").value = 1;
+      value = 1;
     } else if (value > 50) {
-      document.getElementById("clvl").value = 50;
+      value = 50;
     }
+    document.getElementById("clvl").value = value;
+    localStorage.setItem("clvl", value);
   }
 
   document.getElementById("generateGriswold").onclick = () => {
@@ -379,7 +381,7 @@
         //shopItemText = shopItemText + ', AC: ' + shopItem.baseItem.ac
       }
 
-      var attrText = "some damage, some durability, some AC, some requirements";
+      var attrText = "";
       if (shopItem.baseItem.ac != undefined) {
         attrText = shopItem.baseItem.ac + " Armor Class";
       } else if (shopItem.baseItem.dmgMin) {
@@ -388,32 +390,37 @@
           shopItem.baseItem.dmgMin +
           "-" +
           shopItem.baseItem.dmgMax;
+      } else {
+        attrText = "Indestructible";
       }
-      // TODO: If suffix is of ages, show Indestructible instead of Dur:
+      // If suffix is of ages, don't show "Dur:"
+      if (shopItem.baseItem.dur && shopItem.suffix?.name !== "the ages") {
       attrText =
         attrText +
-        "  Dur: " +
+          "Dur: " +
         shopItem.baseItem.dur +
         "/" +
         shopItem.baseItem.dur;
+      }
+      attrText += ",  ";
       if (shopItem.baseItem.reqs?.str != undefined) {
         if (shopItem.baseItem.reqs?.dex != undefined) {
           attrText =
             attrText +
-            "  Required: " +
+            "Required: " +
             shopItem.baseItem.reqs.str +
             " str " +
             shopItem.baseItem.reqs.dex +
             " dex";
         } else {
           attrText =
-            attrText + "  Required: " + shopItem.baseItem.reqs.str + " str";
+            attrText + "Required: " + shopItem.baseItem.reqs.str + " str";
         }
       } else if (shopItem.baseItem.reqs?.dex != undefined) {
         attrText =
-          attrText + "  Required: " + shopItem.baseItem.reqs.dex + " dex";
+          attrText + "Required: " + shopItem.baseItem.reqs.dex + " dex";
       } else {
-        attrText = attrText + "  No required attributes";
+        attrText = attrText + "No required attributes";
       }
 
       var affixText;
