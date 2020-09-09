@@ -162,7 +162,7 @@
     var step;
     var clvl = parseInt(document.getElementById("clvl").value);
     let items = new Array(6);
-    while (foundIt < 1 && generationCount < 10000) {
+    while (foundIt < 10 && generationCount < 10000) {
       generationCount++;
       for (step = 1; step < 7; step++) {
         var ilvl = 0;
@@ -225,6 +225,14 @@
       // Prefix only: 20.8% (5/24)
       // Suffix only: 62.5% (15/24)
       // Prefix and suffix: 16.7% (1/6)
+
+      // Devilution items.cpp GetItemPower():
+      //  5/24 chance of just pre
+      //  4/24 chance of both pre and post
+      // 15/24 chance of just post
+      // But it's calculated in a very convoluted way:
+      // 1/4 chance of having prefix, 2/3 chance of having postfix, if neither, 50/50 of just one or the other
+
       var howMagical = Math.random();
       var prefixText = "";
       var suffixText = "";
@@ -448,14 +456,20 @@
         priceTooHigh = false;
       }
     }
-    if (shopItem.baseItem.name === "Long War Bow") {
-      if (shopItem.prefix.name === "massive") {
-        if (shopItem.suffix.name === "swiftness") {
-          if (shopItem.prefix.value > 109) {
-            foundIt++;
-            console.log("Found it!", affixText, shopItem);
-          }
-        }
+    if (["Full Plate Mail"].includes(shopItem.baseItem.name)) {
+      if (["awesome"].includes(shopItem.prefix.name)) {
+        // if (["harmony"].includes(shopItem.suffix.name)) {
+        // if (shopItem.prefix.value > 109) {
+        foundIt++;
+        console.log(
+          "Found it!",
+          `ilvl ${ilvl}`,
+          shopItemText,
+          affixText,
+          shopItemPriceText
+        ); //, shopItem);
+        // }
+        // }
       }
     }
     return {
